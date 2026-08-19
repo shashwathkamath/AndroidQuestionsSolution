@@ -1,24 +1,22 @@
 package com.kamath.fidelityandroidquestion
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.activity.viewModels
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kamath.fidelityandroidquestion.stockPrice.MyViewModel
-import com.kamath.fidelityandroidquestion.stockPrice.StockPriceUiState
+import com.kamath.fidelityandroidquestion.math.MathOperation
+import com.kamath.fidelityandroidquestion.math.MyViewModel
 import com.kamath.fidelityandroidquestion.ui.theme.FidelityAndroidQuestionTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,21 +29,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             FidelityAndroidQuestionTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                    val contenxt = LocalContext.current
-                    LaunchedEffect(Unit) {
-                        viewModel.toastEvents.collect { message ->
-                            Toast.makeText(contenxt, message, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    Greeting(
-                        name = when (val state = uiState) {
-                            is StockPriceUiState.Loading -> "Loading..."
-                            is StockPriceUiState.Success -> "${state.stockPrice.symbol}: $%.2f".format(
-                                state.stockPrice.price
-                            )
-                        },
-                        modifier = Modifier.padding(innerPadding)
+                    val uiStateAverageResult by viewModel.uiStateAverage.collectAsStateWithLifecycle()
+                    val uiStateSumResult by viewModel.uiStateSum.collectAsStateWithLifecycle()
+                    val uiStateEvenNumbersResult by viewModel.uiStateEvenNumbers.collectAsStateWithLifecycle()
+
+                    MathOperationScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        uiStateAverageResult,
+                        uiStateSumResult,
+                        uiStateEvenNumbersResult
                     )
                 }
             }
@@ -53,18 +45,47 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = name,
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    FidelityAndroidQuestionTheme {
-        Greeting("Android")
+fun MathOperationScreen(
+    modifier: Modifier,
+    uiStateAverageResult: MathOperation,
+    uiStateSumResult: MathOperation,
+    uiStateEvenNumbersResult: MathOperation
+) {
+    Column {
+        Button(onClick = { }) { Text("Calculate") }
+        UiStateAverageResultText(uiStateAverageResult)
+        UiStateSumResultText(uiStateSumResult)
+        UiStateEvenNumbersResultText(uiStateEvenNumbersResult)
     }
 }
+
+@Composable
+fun UiStateAverageResultText(uiStateAverageResult: MathOperation) {
+    when (uiStateAverageResult) {
+        is MathOperation.Loading -> Text("Loading...")
+        is MathOperation.AverageResult -> Text("Average : ${uiStateAverageResult.result}")
+        else -> Unit
+    }
+}
+
+@Composable
+fun UiStateSumResultText(uiStateSumResult: MathOperation) {
+    when (uiStateSumResult) {
+        is MathOperation.Loading -> Text("Loading...")
+        is MathOperation.SumResult -> Text("Average : ${uiStateSumResult.result}")
+        else -> Unit
+    }
+}
+
+@Composable
+fun UiStateEvenNumbersResultText(uiStateEvenNumbersResult: MathOperation) {
+    when (uiStateEvenNumbersResult) {
+        is MathOperation.Loading -> Text("Loading...")
+        is MathOperation.EvenNumbersResult -> Text("Average : ${uiStateEvenNumbersResult.result}")
+        else -> Unit
+    }
+}
+
+
