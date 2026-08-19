@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kamath.fidelityandroidquestion.stockPrice.MyViewModel
+import com.kamath.fidelityandroidquestion.stockPrice.StockPriceUiState
 import com.kamath.fidelityandroidquestion.ui.theme.FidelityAndroidQuestionTheme
 
 class MainActivity : ComponentActivity() {

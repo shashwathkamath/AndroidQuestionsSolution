@@ -1,4 +1,4 @@
-package com.kamath.fidelityandroidquestion
+package com.kamath.fidelityandroidquestion.stockPrice
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
